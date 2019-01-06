@@ -1,0 +1,5 @@
+venv
+*.pages
+*.pyc
+*.log
+__pycache__

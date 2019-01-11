@@ -141,6 +141,19 @@ class UserTest(APITestCase):
         self.assertIn('access', response.data)
         self.assertIn('refresh', response.data)
 
+    def test_user_can_refresh_token(self):
+        token_obtain_url = reverse('token_obtain_pair')
+        token_refresh_url = reverse('token_refresh')
+        data = {
+            'username': 'testuser',
+            'password': 'testpassword'
+        }
+        token_obtain = self.client.post(token_obtain_url, data, format='json')
+        refresh_token = {'refresh':token_obtain.data['refresh']}
+        response = self.client.post(token_refresh_url, refresh_token, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+
 
 
 

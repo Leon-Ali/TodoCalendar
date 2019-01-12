@@ -5,6 +5,11 @@ python: "3.7"
 
 env:
 - DJANGO_VERSION=2.1.5
+- SECRET_KEY=verysecret
+- DEBUG_MODE=True
+- DB_NAME=testdb
+- DB_USER_NAME=postgres
+- DB_PASSWORD=secpassword
 
 install:
 - pip install -r requirements.txt

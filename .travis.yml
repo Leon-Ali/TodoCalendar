@@ -4,8 +4,8 @@ dist: xenial
 python: "3.7"
 
 env:
-- DJANGO_VERSION=2.1.5
   global:
+   - DJANGO_VERSION=2.1.5
    - SECRET_KEY=verysecret
    - DEBUG_MODE=True
    - DB_NAME=testdb

@@ -13,7 +13,7 @@ class UserTest(APITestCase):
 
     def test_create_user(self):
         """
-        Ensure we can crate a new user
+        Ensure we can create a new user
         """
         data = {
             'username':'johndoe',

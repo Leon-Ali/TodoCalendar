@@ -1,7 +1,7 @@
 from django.db import models
 
 class List(models.Model):
-    pass
+    name = models.CharField(max_length=250, default='untitled')
 
 
 class Item(models.Model):

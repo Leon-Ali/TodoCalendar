@@ -5,7 +5,7 @@ from lists.models import Item
 class ListTest(APITestCase):
 
     def test_saving_and_retrieving_list(self):
-        list_ = List()
+        list_ = List(name='everyday tasks')
         list_.save()
 
         first_item = Item()

@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer
+from .models import List
+from rest_framework import serializers
 
-class ListSerializer(ModelSerializer):
-    pass
+class ListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = List
+        fields = ('name',)

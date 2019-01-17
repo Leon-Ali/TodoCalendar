@@ -23,7 +23,7 @@ from rest_framework.schemas import get_schema_view
 from rest_framework_swagger.renderers import SwaggerUIRenderer, OpenAPIRenderer
 
 schema_view = get_schema_view(
-    title='Chitcom API', renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer]
+    title='ToDo Calendar API', renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer]
 )
 
 urlpatterns = [

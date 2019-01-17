@@ -55,5 +55,16 @@ class ListViewsTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['name'], data['name'])
 
+    def test_retrieve_lists(self):
+        """
+        Ensure we can retrieve all lists
+        """
+        list_ = List.objects.create(name='Awesome list')
+        response = self.client.get(self.list_url, format='json')
+        self.assertIn('test_list', response.data[0]['name'])
+        self.assertIn('Awesome list', response.data[1]['name'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 
 

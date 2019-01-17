@@ -1,15 +1,12 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework import status
 from lists.serializers import ListSerializer
+from .models import List
 
 
-class List(APIView):
+class List(generics.ListCreateAPIView):
     """Create the List"""
-    def post(self, request, format='json'):
-        serializer = ListSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = List.objects.all()
+    serializer_class = ListSerializer
+
 

@@ -64,6 +64,39 @@ class ListViewsTest(APITestCase):
         self.assertIn('test_list', response.data[0]['name'])
         self.assertIn('Awesome list', response.data[1]['name'])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(List.objects.count(), 2)
+
+    def test_retrieve_list_by_id(self):
+        """
+        Ensure we can retrieve a list by given id
+        """
+        list_ = List.objects.create(name='Awesome list')
+        response = self.client.get(f'/api/lists/{list_.id}/')
+        self.assertIn('Awesome list', response.data['name'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(List.objects.count(), 2)
+
+    def test_delete_list_by_id(self):
+        """
+        Ensure we can delete a list by given id
+        """
+        list_ = List.objects.create(name='Work list')
+        response = self.client.delete(f'/api/lists/{list_.id}/')
+        self.assertEqual(List.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_update_list_by_id(self):
+        """
+        Ensure we can partially update a list by given id
+        """
+        list_ = List.objects.create(name='Update me')
+        response = self.client.put(f'/api/lists/{list_.id}/', data={'name':'Updated list'}, format='json')
+        self.assertEqual(response.data['name'], 'Updated list')
+        print(response.status_code)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+
 
 
 

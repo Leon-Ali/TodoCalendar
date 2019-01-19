@@ -1,4 +1,4 @@
-from .models import List
+from .models import List, Item
 from rest_framework import serializers
 
 class ListSerializer(serializers.ModelSerializer):
@@ -6,3 +6,10 @@ class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
         fields = ('name',)
+
+
+class ItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Item
+        fields = ('text', 'list')

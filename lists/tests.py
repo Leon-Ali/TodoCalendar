@@ -92,8 +92,17 @@ class ListViewsTest(APITestCase):
         list_ = List.objects.create(name='Update me')
         response = self.client.put(f'/api/lists/{list_.id}/', data={'name':'Updated list'}, format='json')
         self.assertEqual(response.data['name'], 'Updated list')
-        print(response.status_code)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_items_for_lists(self):
+        """
+        Ensure we can create items for a given list
+        """
+        list_ = List.objects.create(name="Need items")
+        response = self.client.post(f'/api/lists/{list_.id}/items/', data={'text':'Workout'}, format='json')
+        self.assertEqual(Item.objects.count(), 2)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
 
 

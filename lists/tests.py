@@ -107,6 +107,19 @@ class ListViewsTest(APITestCase):
         self.assertIn('list', response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_get_items_for_lists(self):
+        """
+        Ensure we can retrieve all items for a given list
+        """
+        list_ = List.objects.create(name="Daily goals")
+        first_item = Item.objects.create(text='add tests for app', list=list_)
+        second_item = Item.objects.create(text='go to gym', list=list_)
+        third_item = Item.objects.create(text='read for 30 mins', list=list_)
+        response = self.client.get(f'/api/lists/{list_.id}/items',)
+        self.assertEqual(Item.objects.count(), 4)
+        self.assertEqual(List.objects.count(), 2)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 
 

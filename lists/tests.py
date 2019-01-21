@@ -116,8 +116,12 @@ class ListViewsTest(APITestCase):
         second_item = Item.objects.create(text='go to gym', list=list_)
         third_item = Item.objects.create(text='read for 30 mins', list=list_)
         response = self.client.get(f'/api/lists/{list_.id}/items',)
+        response_list = [item['text'] for item in response.data]
         self.assertEqual(Item.objects.count(), 4)
         self.assertEqual(List.objects.count(), 2)
+        self.assertIn(first_item.text, response_list)
+        self.assertIn(second_item.text, response_list)
+        self.assertIn(third_item.text, response_list)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 

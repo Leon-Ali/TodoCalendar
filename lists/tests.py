@@ -135,6 +135,15 @@ class ListViewsTest(APITestCase):
         self.assertEqual(response.data, None)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_get_item_by_id(self):
+        """
+        Ensure we can retrieve an item by id
+        """
+        item = Item.objects.create(text='wake up early', list=self.test_list)
+        response = self.client.get(f'/api/lists/{self.test_list.id}/items/{item.id}')
+        self.assertEqual(response.data['text'], item.text)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 
 

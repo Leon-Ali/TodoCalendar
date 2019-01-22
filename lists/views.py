@@ -39,4 +39,23 @@ class Items(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ItemsDetail(APIView):
+    """Retrieve, Update and Destroy an item by id"""
+
+    def delete(self, request, **kwargs):
+        list_ = List.objects.get(id=kwargs['pk'])
+        item = Item.objects.get(id=kwargs['item_pk']).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get(self, request, **kwargs):
+        list_ = List.objects.get(id=kwargs['pk'])
+        item = Item.objects.get(id=kwargs['item_pk'])
+        serializer = ItemSerializer(item)
+        if serializer:
+            return Response(serializer.data, status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 

@@ -115,7 +115,7 @@ class ListViewsTest(APITestCase):
         first_item = Item.objects.create(text='add tests for app', list=list_)
         second_item = Item.objects.create(text='go to gym', list=list_)
         third_item = Item.objects.create(text='read for 30 mins', list=list_)
-        response = self.client.get(f'/api/lists/{list_.id}/items',)
+        response = self.client.get(f'/api/lists/{list_.id}/items')
         response_list = [item['text'] for item in response.data]
         self.assertEqual(Item.objects.count(), 4)
         self.assertEqual(List.objects.count(), 2)
@@ -123,6 +123,18 @@ class ListViewsTest(APITestCase):
         self.assertIn(second_item.text, response_list)
         self.assertIn(third_item.text, response_list)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_item_by_id(self):
+        """
+        Ensure we can delete an item by id
+        """
+        list_ = List.objects.create()
+        item = Item.objects.create(text='delete me', list=list_)
+        response = self.client.delete(f'/api/lists/{list_.id}/items/{item.id}')
+        self.assertEqual(Item.objects.count(), 1)
+        self.assertEqual(response.data, None)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
 
 
 

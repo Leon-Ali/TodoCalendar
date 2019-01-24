@@ -19,7 +19,8 @@ class ListDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class Items(APIView):
-    """Creates the Item"""
+    """Creates the and retrieves Items"""
+
 
     def post(self, request, pk, format='json'):
         list_ = List.objects.get(id=pk)

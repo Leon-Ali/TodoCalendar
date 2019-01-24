@@ -1,5 +1,6 @@
 import datetime
 from django.urls import reverse
+from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
 from lists.models import List
@@ -9,7 +10,8 @@ from lists.models import Item
 class ListModelTest(APITestCase):
 
     def test_saving_and_retrieving_list(self):
-        list_ = List(name='everyday tasks')
+        user = User.objects.create(username='Leon', email='Leon@test.com', password='leon123')
+        list_ = List(name='everyday tasks', user=user)
         list_.save()
 
         first_item = Item()
@@ -27,6 +29,7 @@ class ListModelTest(APITestCase):
         saved_list = List.objects.first()
         self.assertEqual(saved_list, list_)
         self.assertEqual(saved_list.name, 'everyday tasks')
+        self.assertEqual(saved_list.user.id, user.id)
 
 
         saved_items = Item.objects.all()

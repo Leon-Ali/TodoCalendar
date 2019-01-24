@@ -1,8 +1,10 @@
+import datetime
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from lists.models import List
 from lists.models import Item
+
 
 class ListModelTest(APITestCase):
 
@@ -13,11 +15,13 @@ class ListModelTest(APITestCase):
         first_item = Item()
         first_item.text = 'I am the first item'
         first_item.list = list_
+        first_item.date = datetime.date.today()
         first_item.save()
 
         second_item = Item()
         second_item.text = 'I am the second'
         second_item.list = list_
+        second_item.date = datetime.date.today()
         second_item.save()
 
         saved_list = List.objects.first()
@@ -42,7 +46,7 @@ class ListViewsTest(APITestCase):
 
     def setUp(self):
         self.test_list = List.objects.create(name='test_list')
-        self.test_item = Item.objects.create(text='Do this today', list=self.test_list)
+        self.test_item = Item.objects.create(text='Do this today', list=self.test_list, date=datetime.date.today())
         self.list_url = reverse('lists')
 
     def test_create_list(self):
@@ -98,8 +102,9 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can create items for a given list
         """
+        data = {'text':'Workout', 'date':'2019-1-23'}
         list_ = List.objects.create(name="Need items")
-        response = self.client.post(f'/api/lists/{list_.id}/items', data={'text':'Workout'}, format='json')
+        response = self.client.post(f'/api/lists/{list_.id}/items', data=data, format='json')
         self.assertEqual(Item.objects.count(), 2)
         self.assertEqual(List.objects.count(), 2)
         self.assertEqual('Workout', response.data['text'])
@@ -112,9 +117,9 @@ class ListViewsTest(APITestCase):
         Ensure we can retrieve all items for a given list
         """
         list_ = List.objects.create(name="Daily goals")
-        first_item = Item.objects.create(text='add tests for app', list=list_)
-        second_item = Item.objects.create(text='go to gym', list=list_)
-        third_item = Item.objects.create(text='read for 30 mins', list=list_)
+        first_item = Item.objects.create(text='add tests for app', list=list_, date=datetime.date.today())
+        second_item = Item.objects.create(text='go to gym', list=list_, date=datetime.date.today())
+        third_item = Item.objects.create(text='read for 30 mins', list=list_, date=datetime.date.today())
         response = self.client.get(f'/api/lists/{list_.id}/items')
         response_list = [item['text'] for item in response.data]
         self.assertEqual(Item.objects.count(), 4)
@@ -129,7 +134,7 @@ class ListViewsTest(APITestCase):
         Ensure we can delete an item by id
         """
         list_ = List.objects.create()
-        item = Item.objects.create(text='delete me', list=list_)
+        item = Item.objects.create(text='delete me', list=list_, date=datetime.date.today())
         response = self.client.delete(f'/api/lists/{list_.id}/items/{item.id}')
         self.assertEqual(Item.objects.count(), 1)
         self.assertEqual(response.data, None)
@@ -139,7 +144,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can retrieve an item by id
         """
-        item = Item.objects.create(text='wake up early', list=self.test_list)
+        item = Item.objects.create(text='wake up early', list=self.test_list, date=datetime.date.today())
         response = self.client.get(f'/api/lists/{self.test_list.id}/items/{item.id}')
         self.assertEqual(response.data['text'], item.text)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

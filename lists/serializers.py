@@ -12,4 +12,4 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ('text', 'list')
+        fields = ('text', 'date','list')

@@ -48,7 +48,8 @@ class ListModelTest(APITestCase):
 class ListViewsTest(APITestCase):
 
     def setUp(self):
-        self.test_list = List.objects.create(name='test_list')
+        self.test_user = User.objects.create(username='Edward', email='edwardelric@test.com', password='alchemist1')
+        self.test_list = List.objects.create(name='test_list', user=self.test_user)
         self.test_item = Item.objects.create(text='Do this today', list=self.test_list, date=datetime.date.today())
         self.list_url = reverse('lists')
 
@@ -56,7 +57,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can create a list
         """
-        data = {'name':'Good list'}
+        data = {'name':'Good list', 'user':self.test_user.id}
         response = self.client.post(self.list_url, data, format='json')
         self.assertEqual(List.objects.count(), 2)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -66,7 +67,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can retrieve all lists
         """
-        list_ = List.objects.create(name='Awesome list')
+        list_ = List.objects.create(name='Awesome list', user=self.test_user)
         response = self.client.get(self.list_url, format='json')
         self.assertIn('test_list', response.data[0]['name'])
         self.assertIn('Awesome list', response.data[1]['name'])
@@ -77,7 +78,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can retrieve a list by given id
         """
-        list_ = List.objects.create(name='Awesome list')
+        list_ = List.objects.create(name='Awesome list', user=self.test_user)
         response = self.client.get(f'/api/lists/{list_.id}/')
         self.assertIn('Awesome list', response.data['name'])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -87,7 +88,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can delete a list by given id
         """
-        list_ = List.objects.create(name='Work list')
+        list_ = List.objects.create(name='Work list', user=self.test_user)
         response = self.client.delete(f'/api/lists/{list_.id}/')
         self.assertEqual(List.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -96,7 +97,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can partially update a list by given id
         """
-        list_ = List.objects.create(name='Update me')
+        list_ = List.objects.create(name='Update me', user=self.test_user)
         response = self.client.put(f'/api/lists/{list_.id}/', data={'name':'Updated list'}, format='json')
         self.assertEqual(response.data['name'], 'Updated list')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -106,7 +107,7 @@ class ListViewsTest(APITestCase):
         Ensure we can create items for a given list
         """
         data = {'text':'Workout', 'date':'2019-1-23'}
-        list_ = List.objects.create(name="Need items")
+        list_ = List.objects.create(name="Need items", user=self.test_user)
         response = self.client.post(f'/api/lists/{list_.id}/items', data=data, format='json')
         self.assertEqual(Item.objects.count(), 2)
         self.assertEqual(List.objects.count(), 2)
@@ -119,7 +120,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can retrieve all items for a given list
         """
-        list_ = List.objects.create(name="Daily goals")
+        list_ = List.objects.create(name="Daily goals", user=self.test_user)
         first_item = Item.objects.create(text='add tests for app', list=list_, date=datetime.date.today())
         second_item = Item.objects.create(text='go to gym', list=list_, date=datetime.date.today())
         third_item = Item.objects.create(text='read for 30 mins', list=list_, date=datetime.date.today())
@@ -136,7 +137,7 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can delete an item by id
         """
-        list_ = List.objects.create()
+        list_ = List.objects.create(user=self.test_user)
         item = Item.objects.create(text='delete me', list=list_, date=datetime.date.today())
         response = self.client.delete(f'/api/lists/{list_.id}/items/{item.id}')
         self.assertEqual(Item.objects.count(), 1)

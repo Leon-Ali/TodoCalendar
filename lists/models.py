@@ -8,19 +8,19 @@ class List(models.Model):
 
 class Item(models.Model):
 
-    SCHEDULED = 'SCH'
-    INPROGRESS = 'INP'
-    COMPLETED = 'COM'
+    SCHEDULED = 'SC'
+    INPROGRESS = 'IN'
+    COMPLETED = 'CO'
 
     STATUS_CHOICES = (
-        (SCHEDULED, 'Scheduled'),
-        (INPROGRESS, 'In progress'),
-        (COMPLETED, 'Completed')
+        (SCHEDULED, 'scheduled'),
+        (INPROGRESS, 'in progress'),
+        (COMPLETED, 'completed')
     )
 
     text = models.TextField(default='')
     list = models.ForeignKey(List, default=None, on_delete=models.CASCADE)
     date = models.DateField()
-    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=SCHEDULED)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=SCHEDULED)
 
 

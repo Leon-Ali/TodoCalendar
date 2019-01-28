@@ -14,9 +14,9 @@ class ChoicesField(serializers.Field):
 
 
     def to_internal_value(self, data):
+        #TODO Raise serializer.ValidationError to indicate invalid data
         for i in self._choices:
             if data in i:
-                print(i[0])
                 return i[0]
 
 
@@ -30,7 +30,7 @@ class ListSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    status = ChoicesField(choices=Item.STATUS_CHOICES)
+    status = ChoicesField(choices=Item.STATUS_CHOICES, required=False)
 
     class Meta:
         model = Item

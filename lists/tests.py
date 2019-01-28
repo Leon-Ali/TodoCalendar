@@ -18,12 +18,14 @@ class ListModelTest(APITestCase):
         first_item.text = 'I am the first item'
         first_item.list = list_
         first_item.date = datetime.date.today()
+        first_item.status = Item.SCHEDULED
         first_item.save()
 
         second_item = Item()
         second_item.text = 'I am the second'
         second_item.list = list_
         second_item.date = datetime.date.today()
+        second_item.status = Item.INPROGRESS
         second_item.save()
 
         saved_list = List.objects.first()
@@ -38,8 +40,12 @@ class ListModelTest(APITestCase):
 
         saved_first_item = saved_items[0]
         saved_second_item = saved_items[1]
+
         self.assertEqual(saved_first_item.text, 'I am the first item')
+        self.assertEqual(saved_first_item.status, Item.SCHEDULED)
+
         self.assertEqual(saved_second_item.text, 'I am the second')
+        self.assertEqual(saved_second_item.status, Item.INPROGRESS)
 
 
 
@@ -113,6 +119,7 @@ class ListViewsTest(APITestCase):
         self.assertEqual(List.objects.count(), 2)
         self.assertEqual('Workout', response.data['text'])
         self.assertEqual(list_.id, response.data['list'])
+        self.assertEqual('scheduled', response.data['status'])
         self.assertIn('list', response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -148,9 +155,10 @@ class ListViewsTest(APITestCase):
         """
         Ensure we can retrieve an item by id
         """
-        item = Item.objects.create(text='wake up early', list=self.test_list, date=datetime.date.today())
+        item = Item.objects.create(text='wake up early', list=self.test_list, date=datetime.date.today(), status=Item.COMPLETED)
         response = self.client.get(f'/api/lists/{self.test_list.id}/items/{item.id}')
         self.assertEqual(response.data['text'], item.text)
+        self.assertEqual(response.data['status'], 'completed')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
